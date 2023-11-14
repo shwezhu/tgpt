@@ -1,5 +1,6 @@
-# python virtual env
+# python
 env_310/
+__pycache__/
 
 # IntelliJ
 .idea/
