@@ -1,9 +1,10 @@
 import gpt
+import config
 
 
 def main():
-    config = {}
-    gpt.start_talk(config)
+    conf = config.load_config("config.yaml")
+    gpt.start_talk(conf)
 
 
 if __name__ == "__main__":

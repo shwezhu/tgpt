@@ -8,29 +8,25 @@ import system
 
 console = rich.console.Console()
 client = OpenAI()
-GPT4 = "gpt-4-1106-preview"
-GTP3Dot5 = "gpt-3.5-turbo-1106"
-MAX_TOKENS = 200
 prompt_tokens = 0
 completion_tokens = 0
 
 
 def start_talk(config: dict) -> None:
-    system.add_markdown()
+    tryMarkdown(config)
     while True:
         try:
-            query = Prompt.ask("[yellow]ask any questions (type 'quit' to exit)[/yellow]")
+            query = Prompt.ask("[yellow]ask any questions (type 'quit' or 'exit' to exit)[/yellow]")
         # Ctrl + C will raise KeyboardInterrupt, command + D will raise EOFError on macOS
         except (EOFError, KeyboardInterrupt):
             print("\n")
             exit()
-        if query.lower() == "quit":
+        if query.lower() == "quit" or query.lower() == "exit":
             exit()
         if query == "":
             continue
 
         messages.append({"role": "user", "content": query})
-        # need check tokens here
         gpt(config)
 
 
@@ -39,15 +35,9 @@ def gpt(config: dict) -> None:
     Makes stream request.
     :return: None
     """
-    model = GTP3Dot5
-    max_tokens = MAX_TOKENS
-    if "model" in config:
-        model = config["model"]
-    if "max_tokens" in config:
-        max_tokens = config["max_tokens"]
-    # get parameters
-    # model, stream, max_tokens = getParas(config)
+    model, max_tokens = getParas(config)
 
+    # https://platform.openai.com/docs/guides/error-codes/api-errors
     try:
         r = client.chat.completions.create(
             model=model,
@@ -55,7 +45,6 @@ def gpt(config: dict) -> None:
             stream=True,
             max_tokens=max_tokens
         )
-    # https://platform.openai.com/docs/guides/error-codes/api-errors
     except openai.APIError as e:
         messages.pop()
         print(f"OpenAI API returned an API Error: {e.message}")
@@ -82,6 +71,21 @@ def handle_stream(response):
 
     messages.append({"role": "assistant", "content": "".join(chunks)})
     update_tokens()
+
+
+def getParas(config: dict):
+    """
+    Parse model and max_tokens in dict config, if not found in config dict, use model "gpt-3.5-turbo-1106"
+    and 'None' for max_tokens.
+    """
+    model = config.get("model", "gpt-3.5-turbo-1106")
+    max_tokens = config.get("max_tokens", None)
+    return model, max_tokens
+
+
+def tryMarkdown(config: dict):
+    if config.get("markdown", False):
+        system.add_markdown()
 
 
 def update_tokens() -> None:
