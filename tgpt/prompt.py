@@ -1,7 +1,10 @@
+from rich.prompt import Prompt
+
+
 def with_multiline() -> str | None:
     prompt = []
     try:
-        line = input()
+        line = Prompt.ask("[bold yellow]You[/bold yellow]")
     except (EOFError, KeyboardInterrupt):
         return None
     while line:
@@ -16,7 +19,7 @@ def with_multiline() -> str | None:
 
 def with_line() -> str | None:
     try:
-        line = input()
+        line = Prompt.ask("[bold yellow]You[/bold yellow]")
     # Ctrl + C will raise KeyboardInterrupt, command + D will raise EOFError on macOS
     except (EOFError, KeyboardInterrupt):
         return None

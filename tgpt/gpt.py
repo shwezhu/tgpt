@@ -1,10 +1,11 @@
 import openai
+from rich import print
 from openai import OpenAI
 from message import messages
 import message
 import cost
 import prompt
-
+from animation import Animation
 
 client = OpenAI()
 
@@ -30,6 +31,10 @@ def gpt(config: dict) -> None:
     """
     Makes stream request.
     """
+    # Start loading animation
+    animation = Animation()
+    animation.start()
+
     model, max_tokens = getParas(config)
 
     # https://platform.openai.com/docs/guides/error-codes/api-errors
@@ -55,11 +60,15 @@ def gpt(config: dict) -> None:
         print(f"An error occurred: {e}")
         return
 
+    # Stop and clear animation
+    animation.stop()
+
     handle_stream(r, model)
 
 
 def handle_stream(response, model: str):
     chunks = []
+    print(f"[bold green]{model}: [/bold green]", end="")
     for chunk in response:
         if chunk.choices[0].delta.content is not None:
             chunk = chunk.choices[0].delta.content

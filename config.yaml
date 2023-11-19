@@ -2,4 +2,4 @@
 model: "gpt-3.5-turbo-1106"
 temperature: 1
 max_tokens: 300
-markdown: true
+markdown: false
