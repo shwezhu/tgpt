@@ -64,7 +64,7 @@ def num_tokens_from_messages(messages: list, model: str) -> int:
     except KeyError:
         logger.warning("Warning: model not found. Using cl100k_base encoding.")
         encoding = tiktoken.get_encoding("cl100k_base")
- 
+
     num_tokens = 0
     for message in messages:
         # every message follows <im_start>{role/name}\n{content}<im_end>\n
