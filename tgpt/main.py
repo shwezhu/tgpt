@@ -1,5 +1,3 @@
-import openai
-
 import gpt
 import config
 
