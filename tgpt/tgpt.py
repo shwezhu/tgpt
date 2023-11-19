@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import click
 import gpt
 import config
@@ -6,13 +8,14 @@ import config
 @click.command()
 @click.option("-m", "--model", "model", type=click.STRING, help="Set the model")
 @click.option(
-    "-mt", "--max_tokens", "max_tokens", type=click.INT, help="Set the maximum number of tokens to generate within a response of chatGPT"
+    "-mt", "--max_tokens", "max_tokens", type=click.INT, help="Set the maximum number of tokens to generate within a "
+                                                              "response of chatGPT"
 )
 @click.option(
     "-ml", "--multiline", "multiline", is_flag=True, help="Use the multiline input mode"
 )
 def main(model, max_tokens, multiline):
-    conf = config.load_config("config.yaml")
+    conf = config.load_config("../config.yaml")
     if model is not None:
         conf["model"] = model
     if max_tokens is not None:
