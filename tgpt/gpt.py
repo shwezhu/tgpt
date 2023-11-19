@@ -2,7 +2,7 @@ import openai
 from openai import OpenAI
 from rich.prompt import Prompt
 import message
-import tokens
+import cost
 from message import messages
 
 
@@ -13,7 +13,7 @@ def start_talk(config: dict) -> None:
     tryMarkdown(config)
     while True:
         try:
-            query = Prompt.ask("[yellow]ask any questions (type 'quit' or 'exit' to exit)[/yellow]")
+            query = Prompt.ask("[yellow]Ask any questions (type 'quit' or 'exit' to exit)[/yellow]")
         # Ctrl + C will raise KeyboardInterrupt, command + D will raise EOFError on macOS
         except (EOFError, KeyboardInterrupt):
             print("\n")
@@ -39,7 +39,9 @@ def gpt(config: dict) -> None:
             model=model,
             messages=messages,
             stream=True,
-            max_tokens=max_tokens
+            # This limits the maximum number of tokens to generate in the chat completion, not all tokens in the
+            # context.
+            max_tokens=max_tokens,
         )
     except openai.APIError as e:
         messages.pop()
@@ -58,7 +60,6 @@ def gpt(config: dict) -> None:
 
 
 def handle_stream(response, model: str):
-    print()
     chunks = []
     for chunk in response:
         if chunk.choices[0].delta.content is not None:
@@ -68,7 +69,7 @@ def handle_stream(response, model: str):
     print("\n")
 
     message.with_assistant(''.join(chunks))
-    tokens.display_expense(messages, model)
+    cost.display_expense(messages, model)
 
 
 def getParas(config: dict):

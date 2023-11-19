@@ -1,39 +1,39 @@
 import logging
-
 import tiktoken
-from rich.logging import RichHandler
-
+from rich import console
 from models import PRICING_RATE
 
-logger = logging.getLogger("rich")
+logger = logging.getLogger("gpt-tokens")
+console = console.Console()
 
 prompt_tokens = 0
 completion_tokens = 0
+total_cost = 0
 
 
 def display_expense(messages: list, model: str) -> None:
     update_tokens(messages, model)
+    num_tokens = prompt_tokens + completion_tokens
 
-    logger.info(
-        f"\nTotal tokens used: [green bold]{prompt_tokens + completion_tokens}",
-        extra={"highlighter": None},
-    )
-
+    global total_cost
     if model in PRICING_RATE:
-        total_expense = calculate_expense(
+        cost = calculate_expense(
             prompt_tokens,
             completion_tokens,
             PRICING_RATE[model]["prompt"],
             PRICING_RATE[model]["completion"],
         )
-        logger.info(
-            f"Estimated expense: [green bold]${total_expense}",
-            extra={"highlighter": None},
+        total_cost += cost
+        console.print(
+            f"Tokens: {num_tokens} | Cost: ${cost:.6f} | Total: ${total_cost:.6f}",
+            justify="right",
+            style="dim",
         )
     else:
-        logger.warning(
-            f"[red bold]No expense estimate available for model {model}",
-            extra={"highlighter": None},
+        console.print(
+            f"Model {model} not found",
+            justify="right",
+            style="dim",
         )
 
 
@@ -42,11 +42,11 @@ def calculate_expense(
         _completion_tokens: int,
         prompt_pricing: float,
         completion_pricing: float,
-) -> str:
+) -> float:
     expense = ((_prompt_tokens / 1000) * prompt_pricing) + (
             (_completion_tokens / 1000) * completion_pricing
     )
-    expense = "{:.6f}".format(round(expense, 6))
+    expense = round(expense, 6)
 
     return expense
 
@@ -62,10 +62,7 @@ def num_tokens_from_messages(messages: list, model: str) -> int:
     try:
         encoding = tiktoken.encoding_for_model(model)
     except KeyError:
-        logger.warning(
-            "Warning: model not found. Using cl100k_base encoding.",
-            extra={"highlighter": None},
-        )
+        logger.warning("Warning: model not found. Using cl100k_base encoding.")
         encoding = tiktoken.get_encoding("cl100k_base")
 
     num_tokens = 0
