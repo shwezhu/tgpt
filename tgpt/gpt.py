@@ -1,9 +1,9 @@
 import openai
 from openai import OpenAI
-from rich.prompt import Prompt
+from message import messages
 import message
 import cost
-from message import messages
+import prompt
 
 
 client = OpenAI()
@@ -12,18 +12,17 @@ client = OpenAI()
 def start_talk(config: dict) -> None:
     tryMarkdown(config)
     while True:
-        try:
-            query = Prompt.ask("[yellow]Ask any questions (type 'quit' or 'exit' to exit)[/yellow]")
-        # Ctrl + C will raise KeyboardInterrupt, command + D will raise EOFError on macOS
-        except (EOFError, KeyboardInterrupt):
-            print("\n")
+        if config["multiline"]:
+            msg = prompt.with_multiline()
+        else:
+            msg = prompt.with_line()
+
+        if msg is None:
             exit()
-        if query.lower() == "quit" or query.lower() == "exit":
-            exit()
-        if query == "":
+        if msg.strip() == "":
             continue
 
-        message.with_user(query)
+        message.with_user(msg)
         gpt(config)
 
 
