@@ -1,7 +1,7 @@
+from rich.prompt import Prompt
 from message import messages
 import message
 import assistant
-import input
 from cost import display_expense
 from animation import Animation
 import rich
@@ -13,9 +13,9 @@ def start_talk(config: dict) -> None:
     tryMarkdown(config)
     while True:
         if config["multiline"]:
-            msg = input.with_multiline()
+            msg = with_multiline()
         else:
-            msg = input.with_line()
+            msg = with_line()
 
         if msg is None:
             exit()
@@ -50,3 +50,30 @@ def handle_stream(response_iter, model: str):
 def tryMarkdown(config: dict):
     if config.get("markdown", False):
         message.add_markdown()
+
+
+def with_multiline() -> str | None:
+    prompt = []
+    try:
+        line = Prompt.ask("[bold yellow]You[/bold yellow]")
+    except (EOFError, KeyboardInterrupt):
+        return None
+    while line:
+        prompt.append(line)
+        try:
+            line = input()
+        except (EOFError, KeyboardInterrupt):
+            return None
+
+    return "\n".join(prompt)
+
+
+def with_line() -> str | None:
+    try:
+        line = Prompt.ask("[bold yellow]You[/bold yellow]")
+    # Ctrl + C will raise KeyboardInterrupt, command + D will raise EOFError on macOS
+    except (EOFError, KeyboardInterrupt):
+        return None
+    if line.lower() == "quit" or line.lower() == "exit":
+        return None
+    return line
