@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import click
-import gpt
 import config
+from cli import start_talk
 
 
 @click.command()
@@ -26,7 +26,8 @@ def main(model, max_tokens, multiline):
         print("Input prompt ending with an empty line: ")
     else:
         print("Ask any questions (type 'quit' or 'exit' to exit): ")
-    gpt.start_talk(conf)
+
+    start_talk(conf)
 
 
 if __name__ == "__main__":

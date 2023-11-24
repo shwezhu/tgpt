@@ -1,4 +1,33 @@
+from typing import TypedDict
+
+
+class Message(TypedDict):
+    role: str
+    content: str
+
+
 messages = []
+
+
+def with_system(msg: str) -> None:
+    """
+    Add a system message to the message list.
+    """
+    messages.append({"role": "system", "content": msg})
+
+
+def with_user(msg: str) -> None:
+    """
+    Add a user message to the message list.
+    """
+    messages.append({"role": "user", "content": msg})
+
+
+def with_assistant(msg: str) -> None:
+    """
+    Add an assistant message to the message list.
+    """
+    messages.append({"role": "assistant", "content": msg})
 
 
 def add_markdown() -> None:
@@ -7,12 +36,4 @@ def add_markdown() -> None:
     """
     instruction = ("Always use code blocks with the appropriate language tags. If asked for a table always format it "
                    "using Markdown syntax.")
-    messages.append({"role": "system", "content": instruction})
-
-
-def with_user(msg: str) -> None:
-    messages.append({"role": "user", "content": msg})
-
-
-def with_assistant(msg: str) -> None:
-    messages.append({"role": "assistant", "content": msg})
+    with_system(instruction)
