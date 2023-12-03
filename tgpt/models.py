@@ -10,3 +10,6 @@ PRICING_RATE = {
     "gpt-4-1106-preview": {"prompt": 0.01, "completion": 0.03},
 }
 
+Bots = {
+    "gpt": "gpt-3.5-turbo-1106",
+}

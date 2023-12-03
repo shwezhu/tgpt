@@ -10,7 +10,8 @@ import rich
 def start_talk(config: dict) -> None:
     bot = assistant.Assistant(config)
 
-    tryMarkdown(config)
+    try_markdown(config)
+    try_select_mode(config)
     while True:
         if config["multiline"]:
             msg = with_multiline()
@@ -47,9 +48,16 @@ def handle_stream(response_iter, model: str):
     display_expense(messages, model)
 
 
-def tryMarkdown(config: dict):
+def try_markdown(config: dict):
     if config.get("markdown", False):
         message.add_markdown()
+
+
+def try_select_mode(config: dict):
+    if config.get("translator", False):
+        message.translator_mode()
+    elif config.get("reader", False):
+        message.reader_mode()
 
 
 def with_multiline() -> str | None:
