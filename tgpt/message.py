@@ -55,4 +55,4 @@ def reader_mode() -> None:
 def trim_last_two_messages() -> None:
     global messages
     if len(messages) > 2:
-        messages = messages[:-2]
+        del messages[-2:]
