@@ -50,3 +50,9 @@ def reader_mode() -> None:
     """
     Add a reader mode message to the message list.
     """
+
+
+def trim_last_two_messages() -> None:
+    global messages
+    if len(messages) > 2:
+        messages = messages[:-2]

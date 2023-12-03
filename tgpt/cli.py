@@ -1,5 +1,4 @@
 from rich.prompt import Prompt
-from message import messages
 import message
 import assistant
 from cost import display_expense
@@ -24,10 +23,10 @@ def start_talk(config: dict) -> None:
             continue
 
         message.with_user(msg)
-        handle_stream(bot.chat(messages), bot.provider.model)
+        handle_stream(bot.chat(message.messages), bot.provider.model, config.get("interactive", False))
 
 
-def handle_stream(response_iter, model: str):
+def handle_stream(response_iter, model: str, interactive: bool) -> None:
     # Start loading animation
     animation = Animation()
     animation.start()
@@ -45,7 +44,11 @@ def handle_stream(response_iter, model: str):
     print("\n")
 
     message.with_assistant(''.join(chunks))
-    display_expense(messages, model)
+    display_expense(message.messages, model)
+
+    # not chat history sending back to bot, if interactive mode is not enabled.
+    if not interactive:
+        message.trim_last_two_messages()
 
 
 def try_markdown(config: dict):

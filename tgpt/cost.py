@@ -12,8 +12,7 @@ total_cost = 0
 
 
 def display_expense(messages: list, model: str) -> None:
-    update_tokens(messages, model)
-    num_tokens = prompt_tokens + completion_tokens
+    num_tokens = get_and_update_tokens(messages, model)
 
     global total_cost
     if model in PRICING_RATE:
@@ -51,11 +50,12 @@ def calculate_expense(
     return expense
 
 
-def update_tokens(messages: list, model: str) -> None:
+def get_and_update_tokens(messages: list, model: str) -> int:
     global prompt_tokens  # the message sent to chatgpt
     global completion_tokens  # the generated response
     prompt_tokens += num_tokens_from_messages(messages[:len(messages) - 1], model)
     completion_tokens = num_tokens_from_messages([messages[len(messages) - 1]], model)
+    return prompt_tokens + completion_tokens
 
 
 def num_tokens_from_messages(messages: list, model: str) -> int:
