@@ -1,5 +1,6 @@
 #api-key: "INSERT API KEY HERE" or set OPEN_API_KEY environment variable
 model: "gpt-3.5-turbo-1106"
-temperature: 1
+#temperature: 1
 max_tokens: 300
-markdown: false
+markdown: true
+interactive: false

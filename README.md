@@ -25,20 +25,24 @@ export OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 ```shell
 cd tgpt
 ./tgpt.py
-# python3 ./tgpt.py -ml  # multiple line mode
-# python3 ./tgpt.py -mt 300 # specify max_tokens
+# python3 ./tgpt.py -ml -i  # multiple line and interactive mode
+# python3 ./tgpt.py -t # translator mode
+# python3 ./tgpt.py -r # reader mode
 ```
 
 > Make sure the script executable: `chmod +x tgpt.py`
 
 ```shell
-❯ ./tgpt.py --help
+env_310 ❯ ./tgpt.py --help
 Usage: tgpt.py [OPTIONS]
-
+ 
 Options:
-  -m, --model TEXT           Set the model
-  -mt, --max_tokens INTEGER  Set the maximum number of tokens to generate
-                             within a response of chatGPT
-  -ml, --multiline           Use the multiline input mode
-  --help                     Show this message and exit.
+  -b, --bot TEXT     Set bot which will set the cheapest model for the
+                     specified bot, available choices: gpt.
+  -m, --multiline    Use the multiline input mode.
+  -i, --interactive  Use the interactive mode.
+  -t, --translator   Make the bot act as an English translator, spelling
+                     corrector and improver.
+  -r, --reader       Make the bot act as a reader.
+  --help             Show this message and exit.
 ```
