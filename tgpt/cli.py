@@ -1,3 +1,4 @@
+from typing import Iterator
 from rich.prompt import Prompt
 import message
 import assistant
@@ -26,14 +27,18 @@ def start_talk(config: dict) -> None:
         handle_stream(bot.chat(message.messages), bot.provider.model, config.get("interactive", False))
 
 
-def handle_stream(response_iter, model: str, interactive: bool) -> None:
+def handle_stream(iterator: Iterator[str], model: str, interactive: bool) -> None:
     # Start loading animation
     animation = Animation()
     animation.start()
 
+    if is_iterator_empty(iterator):
+        animation.stop()
+        return
+
     chunks = []
     try:
-        for chunk in response_iter:
+        for chunk in iterator:
             if animation.is_alive():
                 animation.stop()  # Stop and clear animation
                 rich.print(f"[bold green]{model}: [/bold green]", end="")
@@ -88,3 +93,11 @@ def with_line() -> str | None:
     if line.lower() == "quit" or line.lower() == "exit":
         return None
     return line
+
+
+def is_iterator_empty(iterator):
+    try:
+        next(iterator)
+        return False
+    except StopIteration:
+        return True

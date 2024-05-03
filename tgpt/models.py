@@ -12,4 +12,5 @@ PRICING_RATE = {
 
 Bots = {
     "gpt": "gpt-3.5-turbo-1106",
+    "gemini": "gpt-3.5-turbo-0613",
 }

@@ -27,15 +27,15 @@ class OpenAICompletionProvider(CompletionProvider):
         except openai.APIError as e:
             messages.pop()
             print(f"OpenAI API returned an API Error: {e.message}")
-            return
+            return iter([])
         except openai.RateLimitError as e:
             messages.pop()
             print(f"OpenAI API request exceeded rate limit: {e.message}")
-            return
+            return iter([])
         except Exception as e:  # capture any other exceptions and raise it.
             messages.pop()
             print(f"An error occurred: {e}")
-            return
+            return iter([])
 
         response_iter = cast(Any, r)
 
